@@ -5,9 +5,9 @@ import numpy as np
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 # Memuat model, scaler, dan label encoder yang sudah disimpan
-model = joblib.load('/mnt/data/logistic_regression_model.pkl')
-scaler = joblib.load('/mnt/data/scaler.pkl')
-label_encoder = joblib.load('/mnt/data/label_encoder.pkl')
+model = joblib.load('logistic_regression_model.pkl')
+scaler = joblib.load('scaler.pkl')
+label_encoder = joblib.load('label_encoder.pkl')
 
 # Kolom yang digunakan saat pelatihan
 model_columns = ['age', 'bmi', 'daily_steps', 'sleep_hours', 'smoker', 'alcohol', 
