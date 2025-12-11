@@ -2,11 +2,18 @@ import streamlit as st
 import joblib
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 
 # Memuat model, scaler, dan label encoder yang sudah disimpan
-model = joblib.load('logistic_regression_model.pkl')
-scaler = joblib.load('scaler.pkl')
-label_encoder = joblib.load('label_encoder.pkl')
+model = joblib.load('/mnt/data/logistic_regression_model.pkl')
+scaler = joblib.load('/mnt/data/scaler.pkl')
+label_encoder = joblib.load('/mnt/data/label_encoder.pkl')
+
+# Kolom yang digunakan saat pelatihan
+model_columns = ['age', 'bmi', 'daily_steps', 'sleep_hours', 'smoker', 'alcohol', 
+                 'systolic_bp', 'diastolic_bp', 'gender', 'calories_consumed', 
+                 'cholesterol', 'family_history', 'resting_hr', 'water_intake_l', 
+                 'bp_ratio', 'pulse_pressure', 'is_obese', 'low_sleep', 'risk_score']
 
 # Membuat form input
 st.title("Prediksi Risiko Penyakit Berdasarkan Gaya Hidup")
@@ -56,15 +63,6 @@ input_data['low_sleep'] = (input_data['sleep_hours'] < 6).astype(int)
 input_data['risk_score'] = input_data['smoker'] + input_data['alcohol'] + input_data['is_obese'] + input_data['low_sleep']
 
 # Pastikan input_data memiliki fitur yang sama dengan data pelatihan (menggunakan kolom yang sama)
-# Mengambil fitur yang digunakan pada model pelatihan
-model_columns = [
-    'age', 'bmi', 'daily_steps', 'sleep_hours', 'smoker', 'alcohol', 
-    'systolic_bp', 'diastolic_bp', 'gender', 'calories_consumed', 'cholesterol', 
-    'family_history', 'resting_hr', 'water_intake_l', 'bp_ratio', 'pulse_pressure', 
-    'is_obese', 'low_sleep', 'risk_score'
-]
-
-# Menyusun kolom agar sesuai dengan urutan pelatihan
 input_data = input_data[model_columns]
 
 # Scaling data dengan scaler yang sudah dilatih
@@ -78,3 +76,15 @@ if prediction[0] == 1:
     st.write("**Hasil Prediksi: High Risk**")
 else:
     st.write("**Hasil Prediksi: Low Risk**")
+
+# Menyediakan visualisasi koefisien model jika diinginkan
+if st.checkbox("Tampilkan Koefisien Model"):
+    coef_df = pd.DataFrame({
+        'Feature': model_columns,
+        'Coefficient': model.coef_[0]
+    }).sort_values(by='Coefficient', ascending=False)
+
+    st.write("\nTop 5 Faktor Peningkat Risiko (Koefisien Positif):")
+    st.write(coef_df.head(5))
+    st.write("\nTop 5 Faktor Penurun Risiko (Koefisien Negatif):")
+    st.write(coef_df.tail(5))
