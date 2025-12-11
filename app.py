@@ -1,5 +1,7 @@
 import streamlit as st
 import joblib
+import pandas as pd
+import numpy as np
 
 # Memuat model, scaler, dan label encoder yang sudah disimpan
 model = joblib.load('logistic_regression_model.pkl')
