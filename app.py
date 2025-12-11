@@ -27,7 +27,7 @@ smoker = 1 if smoker == 'Yes' else 0
 alcohol = 1 if alcohol == 'Yes' else 0
 gender_encoded = label_encoder.transform([gender])[0]
 
-# Membuat DataFrame dari input
+# Menangani input kosong dan menambahkan fitur yang hilang
 input_data = pd.DataFrame({
     'age': [age],
     'bmi': [bmi],
@@ -37,17 +37,26 @@ input_data = pd.DataFrame({
     'alcohol': [alcohol],
     'systolic_bp': [systolic_bp],
     'diastolic_bp': [diastolic_bp],
-    'gender': [gender_encoded]
+    'gender': [gender_encoded],
+    'calories_consumed': [0],  # Nilai default
+    'cholesterol': [0],  # Nilai default
+    'family_history': [0],  # Nilai default
+    'resting_hr': [0],  # Nilai default
+    'water_intake_l': [0]  # Nilai default
 })
 
-# Feature Engineering
+# Verifikasi input_data
+st.write(f"Input Data:\n{input_data}")
+
+# Feature Engineering: Sama seperti yang dilakukan pada data training
 input_data['bp_ratio'] = input_data['systolic_bp'] / input_data['diastolic_bp']
 input_data['pulse_pressure'] = input_data['systolic_bp'] - input_data['diastolic_bp']
 input_data['is_obese'] = (input_data['bmi'] >= 30).astype(int)
 input_data['low_sleep'] = (input_data['sleep_hours'] < 6).astype(int)
 input_data['risk_score'] = input_data['smoker'] + input_data['alcohol'] + input_data['is_obese'] + input_data['low_sleep']
 
-# Scaling data with the pre-fitted scaler
+# Pastikan input_data memiliki fitur yang sama dengan data pelatihan (menggunakan kolom yang sama)
+# Scaling data dengan scaler yang sudah dilatih
 input_scaled = scaler.transform(input_data)
 
 # Prediksi dengan model yang sudah dilatih
