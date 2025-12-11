@@ -2,6 +2,10 @@ import streamlit as st
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from imblearn.over_sampling import SMOTE
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
 
 # Memuat model, scaler, dan label encoder yang sudah disimpan
 model = joblib.load('logistic_regression_model.pkl')
@@ -40,15 +44,20 @@ input_data = pd.DataFrame({
     'gender': [gender_encoded]
 })
 
-# Feature Engineering
+# Feature Engineering: Sama seperti yang dilakukan pada data training
 input_data['bp_ratio'] = input_data['systolic_bp'] / input_data['diastolic_bp']
 input_data['pulse_pressure'] = input_data['systolic_bp'] - input_data['diastolic_bp']
 input_data['is_obese'] = (input_data['bmi'] >= 30).astype(int)
 input_data['low_sleep'] = (input_data['sleep_hours'] < 6).astype(int)
 input_data['risk_score'] = input_data['smoker'] + input_data['alcohol'] + input_data['is_obese'] + input_data['low_sleep']
 
-# Scaling data with the pre-fitted scaler
+# Pastikan input_data memiliki fitur yang sama dengan data pelatihan (menggunakan kolom yang sama)
+# Scaling data dengan scaler yang sudah dilatih
 input_scaled = scaler.transform(input_data)
+
+# Menggunakan SMOTE untuk mengatasi kelas yang tidak seimbang (seperti pada pelatihan)
+smote = SMOTE(random_state=42)
+X_res, y_res = smote.fit_resample(input_scaled, np.array([0]))  # dummy value for SMOTE
 
 # Prediksi dengan model yang sudah dilatih
 prediction = model.predict(input_scaled)
