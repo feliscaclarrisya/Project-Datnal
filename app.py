@@ -2,9 +2,9 @@ import streamlit as st
 import joblib
 
 # Memuat model, scaler, dan label encoder yang sudah disimpan
-model = joblib.load('/mnt/data/logistic_regression_model.pkl')
-scaler = joblib.load('/mnt/data/scaler.pkl')
-label_encoder = joblib.load('/mnt/data/label_encoder.pkl')
+model = joblib.load('logistic_regression_model.pkl')
+scaler = joblib.load('scaler.pkl')
+label_encoder = joblib.load('label_encoder.pkl')
 
 # Membuat form input
 st.title("Prediksi Risiko Penyakit Berdasarkan Gaya Hidup")
