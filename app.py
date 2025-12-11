@@ -56,6 +56,17 @@ input_data['low_sleep'] = (input_data['sleep_hours'] < 6).astype(int)
 input_data['risk_score'] = input_data['smoker'] + input_data['alcohol'] + input_data['is_obese'] + input_data['low_sleep']
 
 # Pastikan input_data memiliki fitur yang sama dengan data pelatihan (menggunakan kolom yang sama)
+# Mengambil fitur yang digunakan pada model pelatihan
+model_columns = [
+    'age', 'bmi', 'daily_steps', 'sleep_hours', 'smoker', 'alcohol', 
+    'systolic_bp', 'diastolic_bp', 'gender', 'calories_consumed', 'cholesterol', 
+    'family_history', 'resting_hr', 'water_intake_l', 'bp_ratio', 'pulse_pressure', 
+    'is_obese', 'low_sleep', 'risk_score'
+]
+
+# Menyusun kolom agar sesuai dengan urutan pelatihan
+input_data = input_data[model_columns]
+
 # Scaling data dengan scaler yang sudah dilatih
 input_scaled = scaler.transform(input_data)
 
